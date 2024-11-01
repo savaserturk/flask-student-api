@@ -1,14 +1,14 @@
 # Flask REST API Demo
 
-This project demonstrates a simple REST API built with Python's Flask framework. The API performs CRUD (Create, Read, Update, Delete) operations on user data, which can be tested locally and deployed to Azure App Service for cloud hosting.
+This project demonstrates a simple REST API built with Python's Flask framework. The API performs CRUD (Create, Read, Update, Delete) operations on student data, which can be tested locally and deployed to Azure App Service for cloud hosting.
 
 ## Features
 
-- Retrieve all users
-- Retrieve a specific user by ID
-- Create a new user
-- Update an existing user
-- Delete a user
+- Retrieve all students
+- Retrieve a specific student by ID
+- Create a new student
+- Update an existing student
+- Delete a student
 
 ## Prerequisites
 

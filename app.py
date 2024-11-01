@@ -8,18 +8,19 @@ from flask import Flask, jsonify, request, abort
 # Initialize the Flask app
 app = Flask(__name__)
 
-# In-memory "database" of users
-# This list holds a set of user dictionaries. 
+# In-memory "database" of students
+# This list holds a set of student dictionaries. 
 # In a real-world application, this would be replaced by a database such as MySQL, PostgreSQL, or MongoDB.
-users = [
-    {"id": 1, "name": "Alice", "age": 25},
-    {"id": 2, "name": "Bob", "age": 30},
+students = [
+    { "id": 1, "name": "Alice", "grade": "25" , "email":"test@student.com"},
+    { "id": 2, "name": "Velice", "grade": "55" , "email":"test2@student.com"},
+    { "id": 3, "name": "Dennice", "grade": "76" , "email":"test3@student.com"}
 ]
 
 # Define route to handle requests to the root URL ('/')
 @app.route('/')
 def index():
-    return "Welcome to Flask REST API Demo! Try accessing /users to see all users."
+    return "Welcome to Flask REST API Demo! Try accessing /students to see all students."
 
 # Health check route (GET)
 # This endpoint returns a 200 OK status and a JSON response to confirm that the service is running.
@@ -27,70 +28,72 @@ def index():
 def health_check():
     return jsonify({"status": "healthy"}), 200  # Return HTTP status 200 OK
 
-# Route to retrieve all users (GET request)
-# When the client sends a GET request to /users, this function will return a JSON list of all users.
+# Route to retrieve all students (GET request)
+# When the client sends a GET request to /students, this function will return a JSON list of all students.
 # The @ symbol in Python represents a decorator. 
 # In this case, @app.route is a Flask route decorator.
 # It is used to map a specific URL (route) to a function in your Flask application.
-@app.route('/users', methods=['GET'])
-def get_users():
-    return jsonify(users), 200  # 200 is the HTTP status code for 'OK'
+@app.route('/students', methods=['GET'])
+def get_students():
+    return jsonify(students), 200  # 200 is the HTTP status code for 'OK'
 
-# Route to retrieve a single user by their ID (GET request)
-# When the client sends a GET request to /users/<id>, this function will return the user with the specified ID.
-@app.route('/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
-    # Using a list comprehension to find the user by ID
-    user = next((user for user in users if user['id'] == user_id), None)
-    if user is None:
-        abort(404)  # If the user is not found, return a 404 error (Not Found)
-    return jsonify(user), 200  # Return the user as a JSON object with a 200 status code (OK)
+# Route to retrieve a single student by their ID (GET request)
+# When the client sends a GET request to /students/<id>, this function will return the student with the specified ID.
+@app.route('/students/<int:student_id>', methods=['GET'])
+def get_student(student_id):
+    # Using a list comprehension to find the student by ID
+    student = next((student for student in students if student['id'] == student_id), None)
+    if student is None:
+        abort(404)  # If the student is not found, return a 404 error (Not Found)
+    return jsonify(student), 200  # Return the student as a JSON object with a 200 status code (OK)
 
-# Route to create a new user (POST request)
-# When the client sends a POST request to /users with user data, this function will add the new user to the list.
-@app.route('/users', methods=['POST'])
-def create_user():
+# Route to create a new student (POST request)
+# When the client sends a POST request to /students with student data, this function will add the new student to the list.
+@app.route('/students', methods=['POST'])
+def create_student():
     # If the request body is not in JSON format or if the 'name' field is missing, return a 400 error (Bad Request)
     if not request.json or not 'name' in request.json:
         abort(400)
     
-    # Create a new user dictionary. Assign the next available ID by incrementing the highest current ID.
-    # If no users exist, the new ID will be 1.
-    new_user = {
-        'id': users[-1]['id'] + 1 if users else 1,
+    # Create a new student dictionary. Assign the next available ID by incrementing the highest current ID.
+    # If no students exist, the new ID will be 1.
+    new_student = {
+        'id': students[-1]['id'] + 1 if students else 1,
         'name': request.json['name'],  # The name is provided in the POST request body
-        'age': request.json.get('age', 0)  # The age is optional; default is 0 if not provided
+        'grade': request.json['grade'],  # The name is provided in the POST request body
+        'email': request.json['email'],  # The name is provided in the POST request body
     }
-    # Add the new user to the users list
-    users.append(new_user)
-    return jsonify(new_user), 201  # 201 is the HTTP status code for 'Created'
+    # Add the new student to the students list
+    students.append(new_student)
+    return jsonify(new_student), 201  # 201 is the HTTP status code for 'Created'
 
-# Route to update an existing user (PUT request)
-# When the client sends a PUT request to /users/<id> with updated user data, this function will update the user.
-@app.route('/users/<int:user_id>', methods=['PUT'])
-def update_user(user_id):
-    # Find the user by their ID
-    user = next((user for user in users if user['id'] == user_id), None)
-    if user is None:
-        abort(404)  # If the user is not found, return a 404 error (Not Found)
+# Route to update an existing student (PUT request)
+# When the client sends a PUT request to /students/<id> with updated student data, this function will update the student.
+@app.route('/students/<int:student_id>', methods=['PUT'])
+def update_student(student_id):
+    # Find the student by their ID
+    student = next((student for student in students if student['id'] == student_id), None)
+    if student is None:
+        abort(404)  # If the student is not found, return a 404 error (Not Found)
     
     # If the request body is missing or not in JSON format, return a 400 error (Bad Request)
     if not request.json:
         abort(400)
     
-    # Update the user's data based on the request body
+    # Update the student's data based on the request body
     # If a field is not provided in the request, keep the existing value
-    user['name'] = request.json.get('name', user['name'])
-    user['age'] = request.json.get('age', user['age'])
-    return jsonify(user), 200  # Return the updated user data with a 200 status code (OK)
+    student['name'] = request.json.get('name', student['name'])
+    student['grade'] = request.json.get('grade', student['grade'])
+    student['email'] = request.json.get('email', student['email'])
+    return jsonify(student), 200  # Return the updated student data with a 200 status code (OK)
 
-# Route to delete a user (DELETE request)
-# When the client sends a DELETE request to /users/<id>, this function will remove the user with that ID.
-@app.route('/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    global users  # Reference the global users list
-    # Rebuild the users list, excluding the user with the specified ID
-    users = [user for user in users if user['id'] != user_id]
+# Route to delete a student (DELETE request)
+# When the client sends a DELETE request to /students/<id>, this function will remove the student with that ID.
+@app.route('/students/<int:student_id>', methods=['DELETE'])
+def delete_student(student_id):
+    global students  # Reference the global students list
+    # Rebuild the students list, excluding the student with the specified ID
+    students = [student for student in students if student['id'] != student_id]
     return '', 204  # 204 is the HTTP status code for 'No Content', indicating the deletion was successful
 
 # Entry point for running the Flask app
