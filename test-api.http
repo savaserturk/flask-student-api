@@ -40,7 +40,8 @@ Content-Type: application/json
 
 {
   "name": "Alice Updated",
-  "age": 26
+  "grade": "26",
+  "email": "alice66@algonquinlive.com"
 }
 
 ###
